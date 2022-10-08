@@ -1,0 +1,70 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.6.20' apply false
+}
+
+repositories {
+    apply plugin: 'kotlin'
+
+    targetCompatibility = sourceCompatibility = '1.8'
+    mavenCentral()
+    maven {
+        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+    }
+
+    maven {
+        url = 'https://repo.starfarm.fun/public'
+    }
+
+    maven {
+        url = uri("https://repo.starfarm.fun/private")
+        credentials {
+            username System.getenv("SF_REPO_USER") ?: project.properties["SF_REPO_USER"] as String
+            password System.getenv("SF_REPO_PASSWORD") ?: project.properties["SF_REPO_PASSWORD"] as String
+        }
+    }
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        jvmTarget = "1.8"
+        freeCompilerArgs += "-Xskip-prerelease-check"
+    }
+}
+
+dependencies {
+    implementation("ru.starfarm:core:live-kt")
+    compileOnly 'org.spigotmc:spigot:1.12.2-R0.1-SNAPSHOT'
+}
+
+def targetJavaVersion = 8
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        options.release = targetJavaVersion
+    }
+}
+
+jar {
+    from sourceSets.main.resources
+            from {
+                duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+                configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+            }
+}
+
+processResources {
+    def props = [version: version]
+    inputs.properties props
+            filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
+}
