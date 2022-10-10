@@ -15,13 +15,7 @@ repositories {
         url = 'https://repo.starfarm.fun/public'
     }
 
-    maven {
-        url = uri("https://repo.starfarm.fun/private")
-        credentials {
-            username System.getenv("SF_REPO_USER") ?: project.properties["SF_REPO_USER"] as String
-            password System.getenv("SF_REPO_PASSWORD") ?: project.properties["SF_REPO_PASSWORD"] as String
-        }
-    }
+
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
@@ -32,7 +26,6 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 }
 
 dependencies {
-    implementation("ru.starfarm:core:live-kt")
     compileOnly 'org.spigotmc:spigot:1.12.2-R0.1-SNAPSHOT'
 }
 

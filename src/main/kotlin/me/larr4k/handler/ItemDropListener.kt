@@ -23,7 +23,9 @@ class ItemDropListener : Listener {
 
     companion object {
         fun handleSignal(loc: Location?) {
-            SignalHandler(loc)
+            if (loc != null) {
+                SignalHandler(loc)
+            }
         }
     }
 }

@@ -7,12 +7,11 @@ import org.bukkit.configuration.file.YamlConfiguration
 import java.io.*
 
 object ConfigManager {
-    private const val CONFIG_VERSION = 2
     private var configFile: File? = null
     private var config: FileConfiguration? = null
     private var itemsFile: File? = null
     private var items: FileConfiguration? = null
-    private fun loadFiles() {
+     fun loadFiles() {
         try {
             configFile = File(Main.instance.dataFolder, "config.yml")
             itemsFile = File(Main.instance.dataFolder, "items.yml")

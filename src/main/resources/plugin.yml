@@ -1,0 +1,6 @@
+name: AnfanikPlugin
+main: me.larr4k.Main
+version: 1.0
+commands:
+  additem:
+    description: additem
